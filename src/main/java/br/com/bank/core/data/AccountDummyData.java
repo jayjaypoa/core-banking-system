@@ -1,4 +1,4 @@
-package br.com.bank.core;
+package br.com.bank.core.data;
 
 import br.com.bank.core.entity.Account;
 import br.com.bank.core.entity.CompanyPerson;
@@ -14,11 +14,11 @@ import java.util.Random;
 import java.util.UUID;
 
 @Component
-public class DummyData  implements CommandLineRunner{
+public class AccountDummyData implements CommandLineRunner{
 
     private final AccountRepository accountRepository;
 
-    DummyData(AccountRepository accountRepository) {
+    AccountDummyData(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 

@@ -2,6 +2,7 @@ package br.com.bank.core.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.Objects;
 public class Account {
 
     @Id
+    @NotNull
     private String id;
 
     @NotNull
@@ -22,9 +24,10 @@ public class Account {
     @NotNull
     private String accountNumber;
 
+    @NumberFormat(pattern = "#,###,###,###.##")
     private BigDecimal balance;
 
-    public Account( String id,
+    public Account( @NotNull String id,
                     @NotNull Person person,
                     @NotNull String branchNumber,
                     @NotNull String accountNumber,
