@@ -16,9 +16,6 @@ public class Account {
     private String id;
 
     @NotNull
-    private Person person;
-
-    @NotNull
     private String branchNumber;
 
     @NotNull
@@ -28,12 +25,10 @@ public class Account {
     private BigDecimal balance;
 
     public Account( @NotNull String id,
-                    @NotNull Person person,
                     @NotNull String branchNumber,
                     @NotNull String accountNumber,
                     BigDecimal balance) {
         this.id = id;
-        this.person = person;
         this.branchNumber = branchNumber;
         this.accountNumber = accountNumber;
         this.balance = balance;
@@ -45,14 +40,6 @@ public class Account {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
     }
 
     public String getBranchNumber() {
@@ -85,7 +72,6 @@ public class Account {
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
         return id.equals(account.id) &&
-                person.equals(account.person) &&
                 branchNumber.equals(account.branchNumber) &&
                 accountNumber.equals(account.accountNumber) &&
                 Objects.equals(balance, account.balance);
@@ -93,7 +79,17 @@ public class Account {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, person, branchNumber, accountNumber, balance);
+        return Objects.hash(id, branchNumber, accountNumber, balance);
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id='" + id + '\'' +
+                ", branchNumber='" + branchNumber + '\'' +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", balance=" + balance +
+                '}';
     }
 
 }
