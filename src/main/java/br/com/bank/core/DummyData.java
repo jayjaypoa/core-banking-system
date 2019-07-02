@@ -1,22 +1,24 @@
 package br.com.bank.core;
 
 import br.com.bank.core.entity.Account;
+import br.com.bank.core.entity.CompanyPerson;
 import br.com.bank.core.entity.NaturalPerson;
 import br.com.bank.core.repository.AccountRepository;
-import org.bson.types.ObjectId;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
+import java.util.Random;
 import java.util.UUID;
 
 @Component
-public class DummyData implements CommandLineRunner {
+public class DummyData  implements CommandLineRunner{
 
     private final AccountRepository accountRepository;
 
-    public DummyData(AccountRepository accountRepository) {
+    DummyData(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
 
@@ -26,17 +28,30 @@ public class DummyData implements CommandLineRunner {
         accountRepository.deleteAll()
                 .thenMany(
                         Flux.just("Nicolas Cage", "Brad Pitt", "Adam Sandler", "Julia Roberts", "Tom Cruise")
-                                .map(name ->
-                                        new Account(
-                                                new ObjectId(UUID.randomUUID().toString()),
-                                                new NaturalPerson(new ObjectId(UUID.randomUUID().toString()),
-                                                        UUID.randomUUID().toString(), name),
-                                                "0001",
-                                                "111111",
-                                                new BigDecimal(5000)))
+                                .map(name -> new Account(
+                                        UUID.randomUUID().toString(),
+                                        new NaturalPerson(
+                                                UUID.randomUUID().toString(),
+                                                String.valueOf(new Random().nextInt(1000000)),
+                                                name),
+                                        String.valueOf(new Random().nextInt(1000)),
+                                        String.valueOf(new Random().nextInt(5000)),
+                                        new BigDecimal(1000)))
+                                .flatMap(accountRepository::save))
+                .thenMany(
+                        Flux.just("Google", "Facebook", "Oracle", "Dell", "SAP")
+                                .map(name -> new Account(
+                                        UUID.randomUUID().toString(),
+                                        new CompanyPerson(
+                                                UUID.randomUUID().toString(),
+                                                String.valueOf(new Random().nextInt(90000)*1000),
+                                                name),
+                                        String.valueOf(new Random().nextInt(2000)),
+                                        String.valueOf(new Random().nextInt(9000)),
+                                        new BigDecimal(50000)))
                                 .flatMap(accountRepository::save))
                 .subscribe(System.out::println);
-
     }
+
 
 }

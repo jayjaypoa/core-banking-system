@@ -16,7 +16,7 @@ public class NaturalPerson extends Person {
     @NotNull
     private String fullName;
 
-    public NaturalPerson(ObjectId id,
+    public NaturalPerson(@NotNull String id,
                          @NotNull String socialSecurityNumber,
                          @NotNull String fullName) {
         super(id, EPersonType.NATURAL);

@@ -1,6 +1,5 @@
 package br.com.bank.core.entity;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,14 +7,14 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-@Document(collection = "account")
+@Document
 public class Account {
 
     @Id
-    private ObjectId id;
+    private String id;
 
     @NotNull
-    private NaturalPerson naturalPerson;
+    private Person person;
 
     @NotNull
     private String branchNumber;
@@ -25,28 +24,32 @@ public class Account {
 
     private BigDecimal balance;
 
-    public Account(ObjectId id, NaturalPerson naturalPerson, String branchNumber, String accountNumber, BigDecimal balance) {
+    public Account( String id,
+                    @NotNull Person person,
+                    @NotNull String branchNumber,
+                    @NotNull String accountNumber,
+                    BigDecimal balance) {
         this.id = id;
-        this.naturalPerson = naturalPerson;
+        this.person = person;
         this.branchNumber = branchNumber;
         this.accountNumber = accountNumber;
         this.balance = balance;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public NaturalPerson getNaturalPerson() {
-        return naturalPerson;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setNaturalPerson(NaturalPerson naturalPerson) {
-        this.naturalPerson = naturalPerson;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public String getBranchNumber() {
@@ -79,14 +82,15 @@ public class Account {
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
         return id.equals(account.id) &&
-                naturalPerson.equals(account.naturalPerson) &&
+                person.equals(account.person) &&
                 branchNumber.equals(account.branchNumber) &&
-                accountNumber.equals(account.accountNumber);
+                accountNumber.equals(account.accountNumber) &&
+                Objects.equals(balance, account.balance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, naturalPerson, branchNumber, accountNumber);
+        return Objects.hash(id, person, branchNumber, accountNumber, balance);
     }
 
 }

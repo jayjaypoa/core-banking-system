@@ -15,7 +15,7 @@ public class CompanyPerson extends Person {
     @NotNull
     private String name;
 
-    public CompanyPerson(ObjectId id,
+    public CompanyPerson(@NotNull String id,
                          @NotNull String employerIdentificationNumber,
                          @NotNull String name) {
         super(id, EPersonType.COMPANY);
