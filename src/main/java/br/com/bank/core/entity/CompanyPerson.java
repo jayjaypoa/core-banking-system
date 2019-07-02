@@ -1,6 +1,7 @@
 package br.com.bank.core.entity;
 
 import br.com.bank.core.enums.EPersonType;
+import org.bson.types.ObjectId;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -14,8 +15,10 @@ public class CompanyPerson extends Person {
     @NotNull
     private String name;
 
-    public CompanyPerson(@NotNull String employerIdentificationNumber, @NotNull String name) {
-        this.setPersonType(EPersonType.COMPANY);
+    public CompanyPerson(ObjectId id,
+                         @NotNull String employerIdentificationNumber,
+                         @NotNull String name) {
+        super(id, EPersonType.COMPANY);
         this.employerIdentificationNumber = employerIdentificationNumber;
         this.name = name;
     }

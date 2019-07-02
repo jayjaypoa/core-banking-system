@@ -16,8 +16,10 @@ public class NaturalPerson extends Person {
     @NotNull
     private String fullName;
 
-    public NaturalPerson(@NotNull String socialSecurityNumber, @NotNull String fullName) {
-        this.setPersonType(EPersonType.NATURAL);
+    public NaturalPerson(ObjectId id,
+                         @NotNull String socialSecurityNumber,
+                         @NotNull String fullName) {
+        super(id, EPersonType.NATURAL);
         this.socialSecurityNumber = socialSecurityNumber;
         this.fullName = fullName;
     }

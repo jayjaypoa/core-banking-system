@@ -18,21 +18,18 @@ public class Account {
     private NaturalPerson naturalPerson;
 
     @NotNull
-    private String accountNumber;
+    private String branchNumber;
 
     @NotNull
-    private String branchNumber;
+    private String accountNumber;
 
     private BigDecimal balance;
 
-    public Account() {
-    }
-
-    public Account(ObjectId id, NaturalPerson naturalPerson, String accountNumber, String branchNumber, BigDecimal balance) {
+    public Account(ObjectId id, NaturalPerson naturalPerson, String branchNumber, String accountNumber, BigDecimal balance) {
         this.id = id;
         this.naturalPerson = naturalPerson;
-        this.accountNumber = accountNumber;
         this.branchNumber = branchNumber;
+        this.accountNumber = accountNumber;
         this.balance = balance;
     }
 
@@ -52,20 +49,20 @@ public class Account {
         this.naturalPerson = naturalPerson;
     }
 
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
     public String getBranchNumber() {
         return branchNumber;
     }
 
     public void setBranchNumber(String branchNumber) {
         this.branchNumber = branchNumber;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public BigDecimal getBalance() {
@@ -83,13 +80,13 @@ public class Account {
         Account account = (Account) o;
         return id.equals(account.id) &&
                 naturalPerson.equals(account.naturalPerson) &&
-                accountNumber.equals(account.accountNumber) &&
-                branchNumber.equals(account.branchNumber);
+                branchNumber.equals(account.branchNumber) &&
+                accountNumber.equals(account.accountNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, naturalPerson, accountNumber, branchNumber);
+        return Objects.hash(id, naturalPerson, branchNumber, accountNumber);
     }
 
 }

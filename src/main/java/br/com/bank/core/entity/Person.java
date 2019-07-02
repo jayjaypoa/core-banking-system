@@ -14,6 +14,11 @@ public class Person {
     @NotNull
     private EPersonType personType;
 
+    public Person(ObjectId id, @NotNull EPersonType personType) {
+        this.id = id;
+        this.personType = personType;
+    }
+
     public ObjectId getId() {
         return id;
     }
