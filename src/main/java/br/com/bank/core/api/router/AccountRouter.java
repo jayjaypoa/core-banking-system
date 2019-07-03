@@ -1,6 +1,6 @@
-package br.com.bank.core.router;
+package br.com.bank.core.api.router;
 
-import br.com.bank.core.handler.AccountHandler;
+import br.com.bank.core.api.handler.AccountHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -18,7 +18,11 @@ public class AccountRouter {
         return RouterFunctions
                 .route(GET("/account").and(accept(MediaType.APPLICATION_JSON)), accountHandler::findAll)
                 .andRoute(GET("/account/{id}").and(accept(MediaType.APPLICATION_JSON)), accountHandler::findById)
-                .andRoute(POST("/account").and(accept(MediaType.APPLICATION_JSON)), accountHandler::save);
+                .andRoute(POST("/account").and(accept(MediaType.APPLICATION_JSON)), accountHandler::save)
+                .andRoute(GET("/account/{accountNumber}/branch/{branchNumber}")
+                                .and(accept(MediaType.APPLICATION_JSON)), accountHandler::findByBranchAndAccountNumber)
+                .andRoute(GET("/account/{accountNumber}/branch/{branchNumber}/balance")
+                                .and(accept(MediaType.APPLICATION_JSON)), accountHandler::getCurrentBalance);
     }
 
 }

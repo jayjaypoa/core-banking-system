@@ -1,13 +1,10 @@
 package br.com.bank.core.entity;
 
 import br.com.bank.core.enums.EOperationType;
-import br.com.bank.core.enums.ETransactionType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Document

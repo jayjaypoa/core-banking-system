@@ -1,4 +1,4 @@
-package br.com.bank.core.handler;
+package br.com.bank.core.api.handler;
 
 import br.com.bank.core.entity.Account;
 import br.com.bank.core.services.AccountService;
@@ -31,11 +31,27 @@ public class AccountHandler {
                 .body(accountService.findById(id), Account.class);
     }
 
+    public Mono<ServerResponse> findByBranchAndAccountNumber(ServerRequest request){
+        Account accountFilter =
+                new Account(request.pathVariable("branchNumber"), request.pathVariable("accountNumber"));
+        return ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(accountService.findByBranchAndAccountNumber(accountFilter), Account.class);
+    }
+
     public Mono<ServerResponse> save(ServerRequest request){
         final Mono<Account> accounts = request.bodyToMono(Account.class);
         return ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(fromPublisher(accounts.flatMap(accountService::save), Account.class));
+    }
+
+    public Mono<ServerResponse> getCurrentBalance(ServerRequest request){
+        Account accountFilter =
+                new Account(request.pathVariable("branchNumber"), request.pathVariable("accountNumber"));
+        return ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(accountService.getCurrentBalance(accountFilter), Account.class);
     }
 
 }

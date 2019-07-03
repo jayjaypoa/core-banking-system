@@ -26,9 +26,14 @@ public class Account {
     public Account(){
     }
 
-    public Account( @NotNull String branchNumber,
-                    @NotNull String accountNumber,
-                    BigDecimal balance) {
+    public Account(@NotNull String branchNumber, @NotNull String accountNumber) {
+        this.branchNumber = branchNumber;
+        this.accountNumber = accountNumber;
+    }
+
+    public Account(@NotNull String branchNumber,
+                   @NotNull String accountNumber,
+                   BigDecimal balance) {
         this.branchNumber = branchNumber;
         this.accountNumber = accountNumber;
         this.balance = balance;

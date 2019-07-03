@@ -9,7 +9,6 @@ import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
 import java.util.Random;
-import java.util.UUID;
 
 @Component
 public class AccountDummyData implements CommandLineRunner{
