@@ -14,7 +14,10 @@ import java.util.UUID;
 @Component
 public class AccountDummyData implements CommandLineRunner{
 
+    private final static String BRANCH_NUMBER = "0001";
+
     private final AccountRepository accountRepository;
+
 
     AccountDummyData(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
@@ -29,14 +32,12 @@ public class AccountDummyData implements CommandLineRunner{
                                    "40041-5", "44471-5", "99945-1", "15151-0", "44758-1", "14142-7", "77458-1",
                                    "70023-9")
                                 .map(accountNumber -> new Account(
-                                        UUID.randomUUID().toString(),
-                                        "0001",
+                                        BRANCH_NUMBER,
                                         accountNumber,
                                         new BigDecimal(new Random().nextInt(1000))))
                                 .flatMap(accountRepository::save))
                 .subscribe(elem -> System.out.println(elem.toString()));
 
     }
-
 
 }

@@ -12,7 +12,6 @@ import java.util.Objects;
 public class Account {
 
     @Id
-    @NotNull
     private String id;
 
     @NotNull
@@ -27,11 +26,9 @@ public class Account {
     public Account(){
     }
 
-    public Account( @NotNull String id,
-                    @NotNull String branchNumber,
+    public Account( @NotNull String branchNumber,
                     @NotNull String accountNumber,
                     BigDecimal balance) {
-        this.id = id;
         this.branchNumber = branchNumber;
         this.accountNumber = accountNumber;
         this.balance = balance;
