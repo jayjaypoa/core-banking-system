@@ -25,14 +25,14 @@ public class AccountDummyData implements CommandLineRunner{
 
         accountRepository.deleteAll()
                 .thenMany(
-                        Flux.just( "Nicolas Cage", "Brad Pitt", "Adam Sandler", "Julia Roberts", "Tom Cruise",
-                                   "Will Smith", "Nicole Kidman", "Angelina Jolie", "Sylvester Stallone",
-                                   "Leonardo DiCaprio" )
-                                .map(name -> new Account(
+                        Flux.just( "15425-5", "45869-2", "44478-4", "33569-5", "19195-2", "10214-5", "99865-1",
+                                   "40041-5", "44471-5", "99945-1", "15151-0", "44758-1", "14142-7", "77458-1",
+                                   "70023-9")
+                                .map(accountNumber -> new Account(
                                         UUID.randomUUID().toString(),
-                                        String.valueOf(new Random().nextInt(1000)),
-                                        String.valueOf(new Random().nextInt(5000)),
-                                        new BigDecimal(1000)))
+                                        "0001",
+                                        accountNumber,
+                                        new BigDecimal(new Random().nextInt(1000))))
                                 .flatMap(accountRepository::save))
                 .subscribe(elem -> System.out.println(elem.toString()));
 

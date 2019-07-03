@@ -24,6 +24,9 @@ public class Account {
     @NumberFormat(pattern = "#,###,###,###.##")
     private BigDecimal balance;
 
+    public Account(){
+    }
+
     public Account( @NotNull String id,
                     @NotNull String branchNumber,
                     @NotNull String accountNumber,
