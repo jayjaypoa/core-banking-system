@@ -9,6 +9,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class CoreApplicationTests {
 
+    // TODO Realizar testes unitários
+
     @Test
     public void contextLoads() {
     }

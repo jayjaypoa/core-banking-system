@@ -17,6 +17,9 @@ public class Transaction {
     private String id;
 
     @NotNull
+    private Account account;
+
+    @NotNull
     private ETransactionType transactionType;
 
     @NotNull
@@ -24,9 +27,11 @@ public class Transaction {
     private BigDecimal amount;
 
     public Transaction(@NotNull String id,
+                       @NotNull Account account,
                        @NotNull ETransactionType transactionType,
                        @NotNull BigDecimal amount) {
         this.id = id;
+        this.account = account;
         this.transactionType = transactionType;
         this.amount = amount;
     }
@@ -37,6 +42,14 @@ public class Transaction {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     public ETransactionType getTransactionType() {
@@ -61,13 +74,13 @@ public class Transaction {
         if (o == null || getClass() != o.getClass()) return false;
         Transaction that = (Transaction) o;
         return id.equals(that.id) &&
+                account.equals(that.account) &&
                 transactionType == that.transactionType &&
                 amount.equals(that.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, transactionType, amount);
+        return Objects.hash(id, account, transactionType, amount);
     }
-
 }

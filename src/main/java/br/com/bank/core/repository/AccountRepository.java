@@ -20,6 +20,7 @@ public class AccountRepository {
         return reactiveMongoTemplate.insert(account);
     }
 
+    // TODO Não usar dois Where.
     public Flux<Account> findByBranchAndAccountNumber(Account accountFilter) {
         Query queryBranchFilter = new Query(
                 where("branchNumber").is(accountFilter.getBranchNumber())

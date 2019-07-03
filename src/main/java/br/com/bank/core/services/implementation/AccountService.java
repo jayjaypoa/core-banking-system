@@ -1,7 +1,8 @@
-package br.com.bank.core.services;
+package br.com.bank.core.services.implementation;
 
 import br.com.bank.core.entity.Account;
 import br.com.bank.core.repository.AccountRepository;
+import br.com.bank.core.services.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -42,6 +43,5 @@ public class AccountService implements IAccountService {
     public Mono<Account> getCurrentBalance(Account accountFilter){
         return accountRepository.findByBranchAndAccountNumber(accountFilter).next();
     }
-
 
 }

@@ -1,7 +1,7 @@
 package br.com.bank.core.api.handler;
 
 import br.com.bank.core.entity.Account;
-import br.com.bank.core.services.AccountService;
+import br.com.bank.core.services.implementation.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
