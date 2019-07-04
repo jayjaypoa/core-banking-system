@@ -1,6 +1,7 @@
 package br.com.bank.core.services.implementation;
 
 import br.com.bank.core.entity.Account;
+import br.com.bank.core.exceptions.AccountException;
 import br.com.bank.core.repository.AccountRepository;
 import br.com.bank.core.services.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ public class AccountService implements IAccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-
     @Override
     public Flux<Account> findAll() {
         return accountRepository.findAll();
@@ -23,7 +23,7 @@ public class AccountService implements IAccountService {
     @Override
     public Mono<Account> findById(String id) {
         return accountRepository.findById(id)
-                .switchIfEmpty(Mono.error(new Exception("Account not found")));
+                .switchIfEmpty(Mono.error(new AccountException("Account not found")));
     }
 
     @Override
@@ -36,12 +36,9 @@ public class AccountService implements IAccountService {
         return accountRepository.delete(account);
     }
 
-    public Flux<Account> findByBranchAndAccountNumber(Account accountFilter){
-        return accountRepository.findByBranchAndAccountNumber(accountFilter);
-    }
-
     public Mono<Account> getCurrentBalance(Account accountFilter){
-        return accountRepository.findByBranchAndAccountNumber(accountFilter).next();
+        return accountRepository.findByBranchAndAccountNumber(accountFilter).next()
+                .switchIfEmpty(Mono.error(new AccountException("Account not found for check the current balance")));
     }
 
 }

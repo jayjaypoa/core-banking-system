@@ -20,22 +20,6 @@ public class AccountRepository {
         return reactiveMongoTemplate.insert(account);
     }
 
-    // TODO Não usar dois Where.
-    public Flux<Account> findByBranchAndAccountNumber(Account accountFilter) {
-        Query queryBranchFilter = new Query(
-                where("branchNumber").is(accountFilter.getBranchNumber())
-                .where("accountNumber").is(accountFilter.getAccountNumber()));
-        return reactiveMongoTemplate.find(queryBranchFilter, Account.class);
-    }
-
-    public Flux<Account> findAll(){
-        return reactiveMongoTemplate.findAll(Account.class);
-    }
-
-    public Mono<Account> findById(String id) {
-        return reactiveMongoTemplate.findById(id, Account.class);
-    }
-
     public Mono<Account> save(Account account) {
         return reactiveMongoTemplate.save(account);
     }
@@ -49,5 +33,29 @@ public class AccountRepository {
         return reactiveMongoTemplate.dropCollection(Account.class);
     }
 
+    public Flux<Account> findAll(){
+        return reactiveMongoTemplate.findAll(Account.class);
+    }
+
+    public Mono<Account> findById(String id) {
+        return reactiveMongoTemplate.findById(id, Account.class);
+    }
+
+    public Flux<Account> findByBranch(Account accountFilter) {
+        return reactiveMongoTemplate.findAll(Account.class)
+                .filter(account -> account.getBranchNumber().compareToIgnoreCase(accountFilter.getBranchNumber()) == 0);
+    }
+
+    public Flux<Account> findByAccountNumber(Account accountFilter) {
+        return reactiveMongoTemplate.findAll(Account.class)
+                .filter(account -> account.getAccountNumber().compareToIgnoreCase(accountFilter.getAccountNumber()) == 0);
+    }
+
+    public Flux<Account> findByBranchAndAccountNumber(Account accountFilter) {
+        Query queryBranchFilter = new Query(
+                where("branchNumber").is(accountFilter.getBranchNumber()) );
+        return reactiveMongoTemplate.find(queryBranchFilter, Account.class)
+                .filter(account -> account.getAccountNumber().compareToIgnoreCase(accountFilter.getAccountNumber()) == 0);
+    }
 
 }

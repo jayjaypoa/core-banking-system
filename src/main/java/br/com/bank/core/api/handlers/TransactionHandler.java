@@ -1,4 +1,4 @@
-package br.com.bank.core.api.handler;
+package br.com.bank.core.api.handlers;
 
 import br.com.bank.core.entity.Transaction;
 import br.com.bank.core.services.implementation.TransactionService;

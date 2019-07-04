@@ -6,11 +6,17 @@ import br.com.bank.core.repository.AccountRepository;
 import br.com.bank.core.repository.TransactionRepository;
 import br.com.bank.core.services.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 @Service
 public class TransactionService implements ITransactionService {
+
+    private static final String TOPIC = "Kafka_Topic";
+
+    @Autowired
+    private KafkaTemplate<String, Transaction> kafkaTemplate;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -32,6 +38,8 @@ public class TransactionService implements ITransactionService {
     }
 
     private Mono<Transaction> executeCredit(Transaction transaction){
+
+        kafkaTemplate.send(TOPIC, transaction);
 
         transactionRepository.insert(transaction);
 
