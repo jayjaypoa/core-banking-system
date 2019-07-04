@@ -17,6 +17,7 @@ public class AccountRouter extends BaseRouter {
 
     @Bean
     public RouterFunction<ServerResponse> accountRoute(AccountHandler accountHandler){
+        logger.info("accountRoute called");
         return RouterFunctions
                 .route(GET("/account")
                         .and(accept(MediaType.APPLICATION_JSON)), accountHandler::findAll)

@@ -18,15 +18,10 @@ public class TransactionRouter extends BaseRouter {
 
     @Bean
     public RouterFunction<ServerResponse> transactionRoute(TransactionHandler transactionHandler){
-
-        String baseRoute = this.getUrl("/transaction");
-
-        RequestPredicate replacement = RequestPredicates.POST(baseRoute)
-                .and(RequestPredicates.accept(MediaType.APPLICATION_JSON));
-
+        logger.info("transactionRoute called");
         return RouterFunctions
-                .route(POST("/transaction").and(accept(MediaType.APPLICATION_JSON)),
-                        transactionHandler::executeTransaction);
+                .route(POST("/transaction")
+                        .and(accept(MediaType.APPLICATION_JSON)), transactionHandler::executeTransaction);
     }
 
     @Override

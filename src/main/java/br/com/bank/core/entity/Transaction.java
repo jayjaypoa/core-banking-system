@@ -26,6 +26,9 @@ public class Transaction {
     @NumberFormat(pattern = "#,###,###,###.##")
     private BigDecimal amount;
 
+    public Transaction(){
+    }
+
     public Transaction(@NotNull String id,
                        @NotNull Account account,
                        @NotNull ETransactionType transactionType,
@@ -82,5 +85,15 @@ public class Transaction {
     @Override
     public int hashCode() {
         return Objects.hash(id, account, transactionType, amount);
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id='" + id + '\'' +
+                ", account=" + account +
+                ", transactionType=" + transactionType +
+                ", amount=" + amount +
+                '}';
     }
 }

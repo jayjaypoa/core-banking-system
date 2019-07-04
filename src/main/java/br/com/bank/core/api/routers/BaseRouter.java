@@ -1,7 +1,7 @@
 package br.com.bank.core.api.routers;
 
 import br.com.bank.core.api.ApiErrorResponse;
-import br.com.bank.core.util.HandlerResponseUtils;
+import br.com.bank.core.utils.HandlerResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

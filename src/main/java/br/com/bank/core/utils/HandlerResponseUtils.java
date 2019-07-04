@@ -1,4 +1,4 @@
-package br.com.bank.core.util;
+package br.com.bank.core.utils;
 
 import br.com.bank.core.api.ApiErrorResponse;
 import br.com.bank.core.api.ApiResponse;

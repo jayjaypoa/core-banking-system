@@ -2,15 +2,15 @@ package br.com.bank.core.exceptions;
 
 import br.com.bank.core.api.ApiErrorResponse;
 
-public class AccountException extends RuntimeException {
+public class CoreException extends RuntimeException {
 
     private ApiErrorResponse errorResponse;
 
-    public AccountException(String message) {
+    public CoreException(String message) {
         this.errorResponse = new ApiErrorResponse<>(message);
     }
 
-    public AccountException(ApiErrorResponse errorResponse) {
+    public CoreException(ApiErrorResponse errorResponse) {
         this.errorResponse = errorResponse;
     }
 
