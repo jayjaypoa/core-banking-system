@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
-
 @Service
 public class TransactionService implements ITransactionService {
 
@@ -43,64 +41,61 @@ public class TransactionService implements ITransactionService {
     @Override
     public Mono<Transaction> executeTransaction(Transaction transaction) {
 
-        logger.debug("Processing a new transaction");
-        logger.debug("Transaction type : " + transaction.getTransactionType().getOperationType());
+        logger.debug("Processing a new transaction. Transaction type : {}",
+                transaction.getTransactionType().getOperationType());
 
         return transactionValidation
                 .validate(transaction)
                 .flatMap(t -> accountService.verifyAccountExistence(t.getAccount()))
                 .flatMap(ac -> {
-                    logger.debug("Account exists. Updating transaction information...");
                     transaction.setAccount(ac);
+                    logger.debug("Account exists. Updating transaction information...");
                     return Mono.just(transaction);
                 })
                 .flatMap(transactionRepository::save)
                 .flatMap(t -> {
+                    logger.debug("Changing the account balance...");
                     if(t.getTransactionType().equals(ETransactionType.CREDIT)){
                         return this.sensibilizeAccountWithCreditOperation(t);
                     } else {
                         return this.sensibilizeAccountWithDebitOperation(t);
                     }
                 })
-                //.flatMap(kafkaTemplate.send(TOPIC, transaction))
+                // .flatMap(kafkaTemplate.send(TOPIC, transaction))
                 .onErrorResume(error -> {
-                    logger.error("[ERROR] Executing credit transaction : " + error.getMessage());
-                    return Mono.error(
-                            new CoreException(
-                                    new ApiErrorResponse(EValidationResponse.TRANSACTION_NOT_EFETIVATED)));
+                    CoreException ce = (CoreException) error;
+                    logger.error("[ERROR] Executing transaction : " + ce.getErrorResponse().getError().getMsg());
+                    return Mono.error(ce);
                 });
-
     }
 
     private Mono<Transaction> sensibilizeAccountWithCreditOperation(Transaction transaction){
+        logger.debug("Credit transaction...");
         return sensibilizeAccountBalance(transaction);
     }
 
     private Mono<Transaction> sensibilizeAccountWithDebitOperation(Transaction transaction){
+        logger.debug("Debit transaction...");
         return this.verifyEnoughtMoneyForDebitTransaction(transaction)
                 .flatMap(this::sensibilizeAccountBalance);
     }
 
     private Mono<Transaction> sensibilizeAccountBalance(Transaction transaction){
+        logger.debug("Changing account balance. Branch {} - Account {}",
+                transaction.getAccount().getBranchNumber(), transaction.getAccount().getAccountNumber());
         Account affectedAccount = transaction.getAccount();
-        if(transaction.equals(ETransactionType.CREDIT)){
+        if(transaction.getTransactionType().equals(ETransactionType.CREDIT)){
             affectedAccount.setBalance(affectedAccount.getBalance().add(transaction.getAmount()));
         } else {
             affectedAccount.setBalance(affectedAccount.getBalance().subtract(transaction.getAmount()));
         }
+        logger.debug("Saving new account balance...");
         Mono<Account> resultAccount = accountService.save(affectedAccount);
         return resultAccount
                 .flatMap(ac -> {
-                    if(ac.getBalance().compareTo(
-                            transaction.getAccount().getBalance().add(transaction.getAmount())) == 0){
                         transaction.setAccount(ac);
+                        logger.debug("Account balance changed with success.");
                         return Mono.just(transaction);
-                    } else {
-                        logger.error("[ERROR] Sensibilize balance account : transaction type invalid");
-                        return Mono.error(
-                                new CoreException(
-                                        new ApiErrorResponse(EValidationResponse.TRANSACTION_TYPE_INVALID)));
-                    }
                 });
     }
 
@@ -108,9 +103,9 @@ public class TransactionService implements ITransactionService {
         if(transaction.getAccount().getBalance().compareTo(transaction.getAmount()) >= 0){
             return Mono.just(transaction);
         }
-        return Mono.error(
-                new CoreException(
-                        new ApiErrorResponse(EValidationResponse.TRANSACTION_NOT_EFETIVATED_INSUFFICIENT_FUNDS)));
+        logger.debug("Transaction not efetivated. Insufficient funds.");
+        throw new CoreException(
+                        new ApiErrorResponse(EValidationResponse.TRANSACTION_NOT_EFETIVATED_INSUFFICIENT_FUNDS));
     }
 
 }

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -35,10 +36,10 @@ public class AccountService implements IAccountService {
         return accountRepository.findById(id)
                 .switchIfEmpty(Mono.error(new CoreException("Account not found")))
                 .onErrorResume(error -> {
-                    logger.error("[ERROR] Searching for account : " + error.getMessage());
+                    logger.error("[ERROR] Searching for account id {} : {}", id, error.getMessage());
                     return Mono.error(
                             new CoreException(
-                                    new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_GENERIC)));
+                                    new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_ACCOUNT_NOT_FOUND)));
                 });
     }
 
@@ -55,9 +56,11 @@ public class AccountService implements IAccountService {
     public Mono<Account> getCurrentBalance(Account accountFilter){
         logger.debug("Current balance executing : " + accountFilter.toString());
         return accountRepository.findByBranchAndAccountNumber(accountFilter)
-                .switchIfEmpty(Mono.error(new CoreException("Account not found for check the current balance")))
+                .switchIfEmpty(Mono.error(
+                        new CoreException(
+                                new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_BALANCE_ACCOUNT))))
                 .onErrorResume(error -> {
-                    logger.error("[ERROR] Getting current balance : " + error.getMessage());
+                    logger.error("[ERROR] Getting current balance : {}",  error.getMessage());
                     return Mono.error(
                             new CoreException(
                                     new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_GENERIC)));
@@ -65,12 +68,13 @@ public class AccountService implements IAccountService {
     }
 
     public Mono<Account> verifyAccountExistence(Account account){
-        logger.debug("Verifing account existence");
+        logger.debug("Verifing account existence. Branch : {} - Account number : {}",
+                account.getBranchNumber(), account.getAccountNumber());
         return accountValidation.validate(account)
             .flatMap(accountRepository::findByBranchAndAccountNumber)
             .flatMap(accountValidation::validateAll)
             .onErrorResume(error -> {
-                logger.error("[ERROR] Verifing account existence : " + error.getMessage());
+                logger.error("[ERROR] Verifing account existence : {}", error.getMessage());
                 return Mono.error(
                         new CoreException(
                                 new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_ACCOUNT_NOT_FOUND)));

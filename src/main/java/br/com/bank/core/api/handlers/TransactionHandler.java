@@ -1,6 +1,8 @@
 package br.com.bank.core.api.handlers;
 
+import br.com.bank.core.api.ApiErrorResponse;
 import br.com.bank.core.entity.Transaction;
+import br.com.bank.core.exceptions.CoreException;
 import br.com.bank.core.services.implementation.TransactionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +26,33 @@ public class TransactionHandler {
     private TransactionService transactionService;
 
     public Mono<ServerResponse> executeTransaction(final ServerRequest request){
-        logger.info("Endpoint called - executeTransaction");
-        return request.body(BodyExtractors.toMono(Transaction.class))
-                .flatMap(transactionService::executeTransaction)
-                .flatMap(requestBody -> {
-                    logger.info("Request Body : {}", requestBody);
+
+        logger.debug("Endpoint called - executeTransaction");
+
+        return request
+                .body(BodyExtractors.toMono(Transaction.class))
+                .flatMap(t -> {
+                   return this.transactionService
+                           .executeTransaction(t)
+                           .onErrorResume(error -> {
+                               CoreException coreException = (CoreException) error;
+                               return Mono.error(coreException);
+                           });
+                })
+                .flatMap(trans -> {
+                    logger.debug("Return Body - Transaction : {}", trans);
                     return ServerResponse.ok()
                             .contentType(MediaType.APPLICATION_JSON)
-                            .body(BodyInserters.fromObject(requestBody));
+                            .body(BodyInserters.fromObject(trans));
+                })
+                .onErrorResume(error -> {
+                    ApiErrorResponse apiErrorResponse = ((CoreException) error).getErrorResponse();
+                    logger.error("Returning error : {} - {}",
+                            apiErrorResponse.getError().getCode(),
+                            apiErrorResponse.getError().getMsg());
+                    return ServerResponse.badRequest()
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .body(BodyInserters.fromObject(apiErrorResponse));
                 });
 
     }

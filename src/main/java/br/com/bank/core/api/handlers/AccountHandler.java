@@ -26,14 +26,14 @@ public class AccountHandler {
     private AccountService accountService;
 
     public Mono<ServerResponse> findAll(ServerRequest request){
-        logger.info("Endpoint called - findAll");
+        logger.debug("Endpoint called - findAll");
         return ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(accountService.findAll(), Account.class);
     }
 
     public Mono<ServerResponse> findById(ServerRequest request){
-        logger.info("Endpoint called - findById");
+        logger.debug("Endpoint called - findById");
         String id = request.pathVariable("id");
         return accountService.findById(id)
                 .flatMap(resp -> ServerResponse.ok().body(BodyInserters.fromObject(resp)))
@@ -43,7 +43,7 @@ public class AccountHandler {
     }
 
     public Mono<ServerResponse> save(ServerRequest request){
-        logger.info("Endpoint called - save");
+        logger.debug("Endpoint called - save");
         final Mono<Account> accounts = request.bodyToMono(Account.class);
         return ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -51,12 +51,12 @@ public class AccountHandler {
     }
 
     public Mono<ServerResponse> getCurrentBalance(ServerRequest request){
-        logger.info("Endpoint called - getCurrentBalance");
+        logger.debug("Endpoint called - getCurrentBalance");
         Account accountFilter =
                 new Account(request.pathVariable("branchNumber"), request.pathVariable("accountNumber"));
         return accountService.getCurrentBalance(accountFilter)
                 .flatMap(resp -> {
-                            logger.info("Response : {}", resp);
+                            logger.debug("Response : {}", resp);
                             return ServerResponse.ok().body(BodyInserters.fromObject(resp));
                         })
                 .switchIfEmpty(ServerResponse.notFound().build())

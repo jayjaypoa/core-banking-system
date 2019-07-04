@@ -18,7 +18,7 @@ public class TransactionRouter extends BaseRouter {
 
     @Bean
     public RouterFunction<ServerResponse> transactionRoute(TransactionHandler transactionHandler){
-        logger.info("transactionRoute called");
+        logger.debug("transactionRoute called");
         return RouterFunctions
                 .route(POST("/transaction")
                         .and(accept(MediaType.APPLICATION_JSON)), transactionHandler::executeTransaction);
