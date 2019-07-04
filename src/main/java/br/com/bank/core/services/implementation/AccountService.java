@@ -33,7 +33,13 @@ public class AccountService implements IAccountService {
     @Override
     public Mono<Account> findById(String id) {
         return accountRepository.findById(id)
-                .switchIfEmpty(Mono.error(new CoreException("Account not found")));
+                .switchIfEmpty(Mono.error(new CoreException("Account not found")))
+                .onErrorResume(error -> {
+                    logger.error("[ERROR] Searching for account : " + error.getMessage());
+                    return Mono.error(
+                            new CoreException(
+                                    new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_GENERIC)));
+                });
     }
 
     @Override
@@ -47,26 +53,28 @@ public class AccountService implements IAccountService {
     }
 
     public Mono<Account> getCurrentBalance(Account accountFilter){
-        logger.info("Current balance executing : " + accountFilter.toString());
+        logger.debug("Current balance executing : " + accountFilter.toString());
         return accountRepository.findByBranchAndAccountNumber(accountFilter)
-                .switchIfEmpty(Mono.error(new CoreException("Account not found for check the current balance")));
+                .switchIfEmpty(Mono.error(new CoreException("Account not found for check the current balance")))
+                .onErrorResume(error -> {
+                    logger.error("[ERROR] Getting current balance : " + error.getMessage());
+                    return Mono.error(
+                            new CoreException(
+                                    new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_GENERIC)));
+                });
     }
 
     public Mono<Account> verifyAccountExistence(Account account){
-
-        ApiErrorResponse apiErrorResponse = new ApiErrorResponse();
-        apiErrorResponse.setError(EValidationResponse.VALIDATION_ERROR_ACCOUNT_NOT_FOUND);
-
-        accountValidation.validate(account)
+        logger.debug("Verifing account existence");
+        return accountValidation.validate(account)
             .flatMap(accountRepository::findByBranchAndAccountNumber)
-            .flatMap(obj -> {
-                return accountValidation.validateAll(obj);
-            })
-            .onErrorResume(obj -> {
-                return Mono.error(new CoreException(apiErrorResponse));
+            .flatMap(accountValidation::validateAll)
+            .onErrorResume(error -> {
+                logger.error("[ERROR] Verifing account existence : " + error.getMessage());
+                return Mono.error(
+                        new CoreException(
+                                new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_ACCOUNT_NOT_FOUND)));
             });
-
-        return Mono.error(new CoreException(apiErrorResponse));
     }
 
 }

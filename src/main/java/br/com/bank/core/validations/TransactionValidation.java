@@ -2,6 +2,7 @@ package br.com.bank.core.validations;
 
 import br.com.bank.core.api.ApiErrorResponse;
 import br.com.bank.core.entity.Transaction;
+import br.com.bank.core.enums.ETransactionType;
 import br.com.bank.core.enums.EValidationResponse;
 import br.com.bank.core.exceptions.CoreException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,10 @@ public class TransactionValidation {
 
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse();
 
-        if (!this.validateAccount(transaction)) {
+        if(!this.validateType(transaction)){
+            apiErrorResponse.setError(EValidationResponse.TRANSACTION_TYPE_INVALID);
+            return Mono.error(new CoreException(apiErrorResponse));
+        } else if (!this.validateAccount(transaction)) {
             apiErrorResponse.setError(EValidationResponse.VALIDATION_ERROR_ACCOUNT_PARAM);
             return Mono.error(new CoreException(apiErrorResponse));
         } else if (!this.validateAmountNegativeOrZero(transaction)) {
@@ -30,6 +34,15 @@ public class TransactionValidation {
         }
 
         return Mono.just(transaction);
+    }
+
+    private boolean validateType(Transaction transaction){
+        if (transaction.getTransactionType().equals(ETransactionType.CREDIT)
+                || transaction.getTransactionType().equals(ETransactionType.DEBIT)){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean validateAccount(Transaction transaction) {
