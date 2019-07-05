@@ -1,6 +1,5 @@
 package br.com.bank.core.repository;
 
-import br.com.bank.core.entity.Account;
 import br.com.bank.core.entity.Transaction;
 import br.com.bank.core.services.implementation.TransactionService;
 import org.slf4j.Logger;
@@ -25,6 +24,10 @@ public class TransactionRepository {
     public Mono<Transaction> save(Transaction transaction) {
         logger.debug("Saving transaction into database...");
         return reactiveMongoTemplate.save(transaction);
+    }
+
+    public Mono<Void> deleteAll(){
+        return reactiveMongoTemplate.dropCollection(Transaction.class);
     }
 
 }

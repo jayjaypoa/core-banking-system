@@ -22,19 +22,16 @@ public class TransactionHandler {
     @Autowired
     private TransactionService transactionService;
 
-    public Mono<ServerResponse> executeTransaction(final ServerRequest request){
-
-        logger.debug("Endpoint called - executeTransaction");
-
-        return request
-                .body(BodyExtractors.toMono(Transaction.class))
+    public Mono<ServerResponse> executeTransactionRequest(final ServerRequest request){
+        logger.debug("Endpoint called - executeTransactionRequest");
+        return request.body(BodyExtractors.toMono(Transaction.class))
                 .flatMap(t -> {
-                   return this.transactionService
-                           .executeTransaction(t)
-                           .onErrorResume(error -> {
-                               CoreException coreException = (CoreException) error;
-                               return Mono.error(coreException);
-                           });
+                    return this.transactionService
+                            .executeTransaction(t)
+                            .onErrorResume(error -> {
+                                CoreException coreException = (CoreException) error;
+                                return Mono.error(coreException);
+                            });
                 })
                 .flatMap(trans -> {
                     logger.debug("Return Body - Transaction : {}", trans);
@@ -47,7 +44,6 @@ public class TransactionHandler {
                             apiErrorResponse.getError().getMsg());
                     return HandlerResponseUtils.badRequest(apiErrorResponse, request);
                 });
-
     }
 
 }

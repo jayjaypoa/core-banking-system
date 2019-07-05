@@ -2,9 +2,9 @@ package br.com.bank.core.data;
 
 import br.com.bank.core.entity.Account;
 import br.com.bank.core.repository.AccountRepository;
+import br.com.bank.core.repository.TransactionRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;
@@ -17,13 +17,20 @@ public class AccountDummyData implements CommandLineRunner{
 
     private final AccountRepository accountRepository;
 
+    private final TransactionRepository transactionRepository;
 
-    AccountDummyData(AccountRepository accountRepository) {
+
+    AccountDummyData ( AccountRepository accountRepository,
+                       TransactionRepository transactionRepository ) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
+
+        transactionRepository.deleteAll()
+                .subscribe(elem -> System.out.println("Transactions deleted."));
 
         accountRepository.deleteAll()
                 .thenMany(

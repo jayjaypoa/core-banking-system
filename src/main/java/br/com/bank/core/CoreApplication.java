@@ -6,11 +6,10 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 
 @SpringBootApplication
 @EnableReactiveMongoRepositories
-public class CoreApplication  {
+public class CoreApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(CoreApplication.class, args);
-        System.out.print("########## INITIALIZING CORE BANKING SYSTEM ##########\n");
     }
 
 }
