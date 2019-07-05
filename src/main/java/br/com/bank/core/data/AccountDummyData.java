@@ -5,7 +5,6 @@ import br.com.bank.core.repository.AccountRepository;
 import br.com.bank.core.repository.TransactionRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
 import reactor.core.publisher.Flux;
 
 import java.math.BigDecimal;

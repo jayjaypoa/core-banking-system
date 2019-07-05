@@ -1,6 +1,5 @@
 package br.com.bank.core.api.handlers;
 
-import br.com.bank.core.api.ApiResponse;
 import br.com.bank.core.entity.Account;
 import br.com.bank.core.exceptions.CoreException;
 import br.com.bank.core.services.implementation.AccountService;
@@ -10,13 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Component
