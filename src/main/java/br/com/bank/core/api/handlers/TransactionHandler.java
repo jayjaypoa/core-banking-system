@@ -1,9 +1,11 @@
 package br.com.bank.core.api.handlers;
 
 import br.com.bank.core.api.ApiErrorResponse;
+import br.com.bank.core.api.ApiResponse;
 import br.com.bank.core.entity.Transaction;
 import br.com.bank.core.exceptions.CoreException;
 import br.com.bank.core.services.implementation.TransactionService;
+import br.com.bank.core.utils.HandlerResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,18 +43,21 @@ public class TransactionHandler {
                 })
                 .flatMap(trans -> {
                     logger.debug("Return Body - Transaction : {}", trans);
-                    return ServerResponse.ok()
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(BodyInserters.fromObject(trans));
+                    return HandlerResponseUtils.ok(trans, request);
+//                    ApiResponse apiResp = new ApiResponse(trans);
+//                    return ServerResponse.ok()
+//                            .contentType(MediaType.APPLICATION_JSON)
+//                            .body(BodyInserters.fromObject(apiResp));
                 })
                 .onErrorResume(error -> {
                     ApiErrorResponse apiErrorResponse = ((CoreException) error).getErrorResponse();
                     logger.error("Returning error : {} - {}",
                             apiErrorResponse.getError().getCode(),
                             apiErrorResponse.getError().getMsg());
-                    return ServerResponse.badRequest()
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(BodyInserters.fromObject(apiErrorResponse));
+                    return HandlerResponseUtils.badRequest(apiErrorResponse, request);
+//                    return ServerResponse.badRequest()
+//                            .contentType(MediaType.APPLICATION_JSON)
+//                            .body(BodyInserters.fromObject(apiErrorResponse));
                 });
 
     }

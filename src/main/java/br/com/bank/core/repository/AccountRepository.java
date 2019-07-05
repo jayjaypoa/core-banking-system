@@ -54,9 +54,12 @@ public class AccountRepository {
     public Mono<Account> findByBranchAndAccountNumber(Account accountFilter) {
         Query queryBranchFilter = new Query(
                 where("branchNumber").is(accountFilter.getBranchNumber()) );
-        return reactiveMongoTemplate.find(queryBranchFilter, Account.class)
-                .filter(account -> account.getAccountNumber().compareToIgnoreCase(accountFilter.getAccountNumber()) == 0)
-                .next();
+        return reactiveMongoTemplate
+                    .find(queryBranchFilter, Account.class)
+                    .filter(account -> account.getAccountNumber()
+                            .compareToIgnoreCase(accountFilter.getAccountNumber()) == 0)
+                    .next();
+
     }
 
 }

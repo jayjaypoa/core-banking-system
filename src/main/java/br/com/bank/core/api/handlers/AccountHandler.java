@@ -1,5 +1,6 @@
 package br.com.bank.core.api.handlers;
 
+import br.com.bank.core.api.ApiResponse;
 import br.com.bank.core.entity.Account;
 import br.com.bank.core.exceptions.CoreException;
 import br.com.bank.core.services.implementation.AccountService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
@@ -36,7 +38,9 @@ public class AccountHandler {
         logger.debug("Endpoint called - findById");
         String id = request.pathVariable("id");
         return accountService.findById(id)
-                .flatMap(resp -> ServerResponse.ok().body(BodyInserters.fromObject(resp)))
+                .flatMap(resp -> {
+                    return HandlerResponseUtils.ok(resp, request);
+                })
                 .switchIfEmpty(ServerResponse.notFound().build())
                 .onErrorResume(CoreException.class,
                         error -> HandlerResponseUtils.badRequest(error.getErrorResponse(), request));
@@ -44,10 +48,22 @@ public class AccountHandler {
 
     public Mono<ServerResponse> save(ServerRequest request){
         logger.debug("Endpoint called - save");
-        final Mono<Account> accounts = request.bodyToMono(Account.class);
-        return ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(fromPublisher(accounts.flatMap(accountService::save), Account.class));
+
+        return request.bodyToMono(Account.class)
+                .flatMap(ac -> {
+                    return accountService
+                            .save(ac)
+                            .flatMap(obj -> {
+                                return HandlerResponseUtils.ok(obj, request);
+//                               return ServerResponse.ok()
+//                                       .contentType(MediaType.APPLICATION_JSON)
+//                                       .body(BodyInserters.fromObject(new ApiResponse(obj)));
+                            });
+                });
+
+//        return ok()
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(fromPublisher(accounts.flatMap(accountService::save), Account.class));
     }
 
     public Mono<ServerResponse> getCurrentBalance(ServerRequest request){
@@ -56,8 +72,10 @@ public class AccountHandler {
                 new Account(request.pathVariable("branchNumber"), request.pathVariable("accountNumber"));
         return accountService.getCurrentBalance(accountFilter)
                 .flatMap(resp -> {
-                            logger.debug("Response : {}", resp);
-                            return ServerResponse.ok().body(BodyInserters.fromObject(resp));
+//                            ApiResponse apiResp = new ApiResponse(resp);
+//                            logger.debug("Response : {}", apiResp);
+//                            return ServerResponse.ok().body(BodyInserters.fromObject(apiResp));
+                            return HandlerResponseUtils.ok(resp, request);
                         })
                 .switchIfEmpty(ServerResponse.notFound().build())
                 .onErrorResume(CoreException.class,

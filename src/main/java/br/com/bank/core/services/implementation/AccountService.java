@@ -71,14 +71,14 @@ public class AccountService implements IAccountService {
         logger.debug("Verifing account existence. Branch : {} - Account number : {}",
                 account.getBranchNumber(), account.getAccountNumber());
         return accountValidation.validate(account)
-            .flatMap(accountRepository::findByBranchAndAccountNumber)
-            .flatMap(accountValidation::validateAll)
-            .onErrorResume(error -> {
-                logger.error("[ERROR] Verifing account existence : {}", error.getMessage());
-                return Mono.error(
-                        new CoreException(
-                                new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_ACCOUNT_NOT_FOUND)));
-            });
+                .flatMap(accountRepository::findByBranchAndAccountNumber)
+                .flatMap(accountValidation::validateAll)
+                .onErrorResume(error -> {
+                    logger.error("[ERROR] Verifing account existence : {}", error.getMessage());
+                    return Mono.error(
+                            new CoreException(
+                                    new ApiErrorResponse(EValidationResponse.VALIDATION_ERROR_ACCOUNT_NOT_FOUND)));
+                });
     }
 
 }
