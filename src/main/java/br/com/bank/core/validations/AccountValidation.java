@@ -18,14 +18,11 @@ public class AccountValidation {
     public AccountValidation(){}
 
     public Mono<Account> validate(Account account) {
-
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse();
-
         if (!this.validateAccount(account)) {
             apiErrorResponse.setError(EValidationResponse.VALIDATION_ERROR_ACCOUNT_PARAM);
             return Mono.error(new CoreException(apiErrorResponse));
         }
-
         return Mono.just(account);
     }
 

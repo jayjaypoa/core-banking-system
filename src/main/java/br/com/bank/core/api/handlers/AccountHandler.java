@@ -48,22 +48,14 @@ public class AccountHandler {
 
     public Mono<ServerResponse> save(ServerRequest request){
         logger.debug("Endpoint called - save");
-
         return request.bodyToMono(Account.class)
                 .flatMap(ac -> {
                     return accountService
                             .save(ac)
                             .flatMap(obj -> {
                                 return HandlerResponseUtils.ok(obj, request);
-//                               return ServerResponse.ok()
-//                                       .contentType(MediaType.APPLICATION_JSON)
-//                                       .body(BodyInserters.fromObject(new ApiResponse(obj)));
                             });
                 });
-
-//        return ok()
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(fromPublisher(accounts.flatMap(accountService::save), Account.class));
     }
 
     public Mono<ServerResponse> getCurrentBalance(ServerRequest request){
@@ -72,9 +64,6 @@ public class AccountHandler {
                 new Account(request.pathVariable("branchNumber"), request.pathVariable("accountNumber"));
         return accountService.getCurrentBalance(accountFilter)
                 .flatMap(resp -> {
-//                            ApiResponse apiResp = new ApiResponse(resp);
-//                            logger.debug("Response : {}", apiResp);
-//                            return ServerResponse.ok().body(BodyInserters.fromObject(apiResp));
                             return HandlerResponseUtils.ok(resp, request);
                         })
                 .switchIfEmpty(ServerResponse.notFound().build())

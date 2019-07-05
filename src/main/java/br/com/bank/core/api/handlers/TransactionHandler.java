@@ -1,7 +1,6 @@
 package br.com.bank.core.api.handlers;
 
 import br.com.bank.core.api.ApiErrorResponse;
-import br.com.bank.core.api.ApiResponse;
 import br.com.bank.core.entity.Transaction;
 import br.com.bank.core.exceptions.CoreException;
 import br.com.bank.core.services.implementation.TransactionService;
@@ -9,15 +8,11 @@ import br.com.bank.core.utils.HandlerResponseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyExtractors;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-
-import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 
 @Component
 public class TransactionHandler {
@@ -44,10 +39,6 @@ public class TransactionHandler {
                 .flatMap(trans -> {
                     logger.debug("Return Body - Transaction : {}", trans);
                     return HandlerResponseUtils.ok(trans, request);
-//                    ApiResponse apiResp = new ApiResponse(trans);
-//                    return ServerResponse.ok()
-//                            .contentType(MediaType.APPLICATION_JSON)
-//                            .body(BodyInserters.fromObject(apiResp));
                 })
                 .onErrorResume(error -> {
                     ApiErrorResponse apiErrorResponse = ((CoreException) error).getErrorResponse();
@@ -55,9 +46,6 @@ public class TransactionHandler {
                             apiErrorResponse.getError().getCode(),
                             apiErrorResponse.getError().getMsg());
                     return HandlerResponseUtils.badRequest(apiErrorResponse, request);
-//                    return ServerResponse.badRequest()
-//                            .contentType(MediaType.APPLICATION_JSON)
-//                            .body(BodyInserters.fromObject(apiErrorResponse));
                 });
 
     }
