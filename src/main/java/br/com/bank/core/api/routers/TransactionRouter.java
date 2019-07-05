@@ -21,7 +21,7 @@ public class TransactionRouter extends BaseRouter {
         logger.debug("transactionRoute called");
         return RouterFunctions
                 .route(POST("/transaction")
-                        .and(accept(MediaType.APPLICATION_JSON)), transactionHandler::executeTransaction);
+                        .and(accept(MediaType.APPLICATION_JSON)), transactionHandler::executeTransactionRequest);
     }
 
     @Override

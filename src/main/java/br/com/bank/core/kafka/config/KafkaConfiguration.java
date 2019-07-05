@@ -1,37 +1,56 @@
 package br.com.bank.core.kafka.config;
 
-import br.com.bank.core.entity.Transaction;
-import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Properties;
 
-// @Configuration
+@Configuration
 public class KafkaConfiguration {
-/*
-    @Bean
-    public ProducerFactory<String, Transaction> producerFactory() {
-        Map<String, Object> config = new HashMap<>();
 
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+    private static final String TOPIC = "8t91jyei-core-banking-system";
+    private static final String BROKERS = "velomobile-01.srvs.cloudkafka.com:9094";
+    private static final String USERNAME = "8t91jyei";
+    private static final String PASSWORD = "wEfEUSd4Mc1Clo6WInEWSd-S90pvIGOy";
+    private Properties props;
 
-        return new DefaultKafkaProducerFactory<>(config);
+    public KafkaConfiguration() {
+        this.props = new Properties();
     }
 
-    @Bean
-    public KafkaTemplate<String, Transaction> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public void generateProps(){
+
+        String jaasTemplate = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";";
+        String jaasCfg = String.format(jaasTemplate, this.USERNAME, this.PASSWORD);
+
+        String serializer = StringSerializer.class.getName();
+        String deserializer = StringDeserializer.class.getName();
+
+        props.put("bootstrap.servers", this.BROKERS);
+        props.put("group.id", this.USERNAME + "-consumer");
+        props.put("enable.auto.commit", "true");
+        props.put("auto.commit.interval.ms", "1000");
+        props.put("auto.offset.reset", "earliest");
+        props.put("session.timeout.ms", "10000");
+        props.put("key.deserializer", deserializer);
+        props.put("value.deserializer", deserializer);
+        props.put("key.serializer", serializer);
+        props.put("value.serializer", serializer);
+        props.put("security.protocol", "SASL_SSL");
+        props.put("sasl.mechanism", "SCRAM-SHA-256");
+        props.put("sasl.jaas.config", jaasCfg);
+
     }
 
- */
+    public String getTopic() {
+        return this.TOPIC;
+    }
+
+    public Properties getProps() {
+        return props;
+    }
 
 }

@@ -6,13 +6,14 @@ import br.com.bank.core.entity.Transaction;
 import br.com.bank.core.enums.ETransactionType;
 import br.com.bank.core.enums.EValidationResponse;
 import br.com.bank.core.exceptions.CoreException;
-import br.com.bank.core.repository.AccountRepository;
+import br.com.bank.core.kafka.KafkaProducer;
 import br.com.bank.core.repository.TransactionRepository;
 import br.com.bank.core.services.ITransactionService;
 import br.com.bank.core.validations.TransactionValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -22,13 +23,14 @@ public class TransactionService implements ITransactionService {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
 
-    private static final String TOPIC = "Kafka_Topic";
+//    @Value("${kafka.topic}")
+//    private String TOPIC;
 
-    // @Autowired
-    // private KafkaTemplate<String, Transaction> kafkaTemplate;
+//    @Autowired
+//    private KafkaTemplate<String, Transaction> kafkaTemplate;
 
-    @Autowired
-    private AccountRepository accountRepository;
+//    @Autowired
+//    private KafkaProducer kafkaProducer;
 
     @Autowired
     private TransactionRepository transactionRepository;
@@ -42,8 +44,7 @@ public class TransactionService implements ITransactionService {
     @Override
     public Mono<Transaction> executeTransaction(Transaction transaction) {
 
-        logger.debug("Processing a new transaction. Transaction type : {}",
-                transaction.getTransactionType().getOperationType());
+        logger.debug("Processing a new transaction : {}", transaction.toString());
 
         return transactionValidation
                 .validate(transaction)
@@ -62,12 +63,17 @@ public class TransactionService implements ITransactionService {
                         return this.sensibilizeAccountWithDebitOperation(t);
                     }
                 })
-                // .flatMap(kafkaTemplate.send(TOPIC, transaction))
+//                .flatMap(trans -> {
+//                    kafkaProducer.sendToKafka(trans);
+//                    kafkaTemplate.send(TOPIC, trans);
+//                    return Mono.just(trans);
+//                })
                 .onErrorResume(error -> {
                     CoreException ce = (CoreException) error;
                     logger.error("[ERROR] Executing transaction : " + ce.getErrorResponse().getError().getMsg());
                     return Mono.error(ce);
                 });
+
     }
 
     private Mono<Transaction> sensibilizeAccountWithCreditOperation(Transaction transaction){

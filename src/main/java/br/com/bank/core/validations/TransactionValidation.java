@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Validator;
 import java.math.BigDecimal;
 
 @Component
@@ -19,9 +18,7 @@ public class TransactionValidation {
     public TransactionValidation(){}
 
     public Mono<Transaction> validate(Transaction transaction) {
-
         ApiErrorResponse apiErrorResponse = new ApiErrorResponse();
-
         if(!this.validateType(transaction)){
             apiErrorResponse.setError(EValidationResponse.TRANSACTION_TYPE_INVALID);
             return Mono.error(new CoreException(apiErrorResponse));
@@ -32,7 +29,6 @@ public class TransactionValidation {
             apiErrorResponse.setError(EValidationResponse.VALIDATION_TRANSACTION_ERROR_AMOUNT_NEGATIVE_OR_ZERO);
             return Mono.error(new CoreException(apiErrorResponse));
         }
-
         return Mono.just(transaction);
     }
 
