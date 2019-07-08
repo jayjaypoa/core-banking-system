@@ -1,18 +1,46 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    ext {
+        springBootVersion = '2.1.6.RELEASE'
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
 plugins {
-    id 'org.springframework.boot' version '2.1.6.RELEASE'
     id 'java'
 }
 
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'br.com.bank'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '12'
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
+// Create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',
+                'Implementation-Version': version,
+                'Main-Class': 'br.com.bank.core.CoreApplication'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+// Get dependencies from Maven central repository
 repositories {
     mavenCentral()
 }
 
+// Project dependencies
 dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
