@@ -39,18 +39,11 @@ public class AccountValidation {
     }
 
     private boolean validateAccount(Account account) {
-        if (account.getBranchNumber().isBlank()
-                || account.getAccountNumber().isBlank()) {
-            return false;
-        }
-        return true;
+        return !(account.getBranchNumber().isBlank() || account.getAccountNumber().isBlank());
     }
 
     private boolean validateId(Account account){
-        if(account.getId().isBlank()){
-            return false;
-        }
-        return true;
+        return !(account.getId().isBlank());
     }
 
 }

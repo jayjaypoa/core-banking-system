@@ -43,21 +43,14 @@ public class TransactionValidation {
 
     private boolean validateType(Transaction transaction){
         logger.debug("Validating type...");
-        if (transaction.getTransactionType().equals(ETransactionType.CREDIT)
-                || transaction.getTransactionType().equals(ETransactionType.DEBIT)){
-            return true;
-        } else {
-            return false;
-        }
+        return (transaction.getTransactionType().equals(ETransactionType.CREDIT)
+                || transaction.getTransactionType().equals(ETransactionType.DEBIT));
     }
 
     private boolean validateAccount(Transaction transaction) {
         logger.debug("Validating account...");
-        if (transaction.getAccount().getBranchNumber().isBlank()
-                || transaction.getAccount().getAccountNumber().isBlank()) {
-            return false;
-        }
-        return true;
+        return !(transaction.getAccount().getBranchNumber().isBlank()
+                || transaction.getAccount().getAccountNumber().isBlank());
     }
 
     private boolean validateAmountNegativeOrZero(Transaction transaction) {
