@@ -8,7 +8,7 @@ Embora não fosse fundamental, alguns outros endpoints também foram desenvolvid
 * Listar uma conta específica pelo seu identificador.<br/>
 * Inserir uma nova conta para uma determinada agência.<br/>
 
-## WebFlux
+## Spring WebFlux
 Este projeto foi desenvolvido em Java (versão 11), utilizando Spring 5 e framework funcional/reativo WebFlux.<br/>
 Optou-se por esta abordagem devido a questões como concorrência e conflitos transacionais.
 
