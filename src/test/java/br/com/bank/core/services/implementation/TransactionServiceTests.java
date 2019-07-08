@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.Random;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -26,6 +27,9 @@ public class TransactionServiceTests {
 
     @Autowired
     private TransactionService service;
+
+    @Autowired
+    private AccountService serviceAccount;
 
     private Transaction transaction;
 
@@ -68,6 +72,69 @@ public class TransactionServiceTests {
 
     }
 
+    @Test
+    public void verifyIfBalanceIsCorrectAfterACreditTransaction(){
+
+        Account account = new Account(this.BRANCH, this.ACCOUNT);
+        BigDecimal amountToCredit = new BigDecimal(1000);
+        BigDecimal balanceBefore = this.getCurrentBalance(account);
+        Transaction response = this.executeCreditTransaction(amountToCredit);
+        BigDecimal finalAmount = balanceBefore.add(amountToCredit);
+        assertTrue(finalAmount.compareTo(response.getAccount().getBalance()) == 0);
+
+        amountToCredit = new BigDecimal(10.22);
+        balanceBefore = this.getCurrentBalance(account);
+        response = this.executeCreditTransaction(amountToCredit);
+        finalAmount = balanceBefore.add(amountToCredit);
+        assertTrue(finalAmount.compareTo(response.getAccount().getBalance()) == 0);
+
+        amountToCredit = new BigDecimal(27.50);
+        balanceBefore = this.getCurrentBalance(account);
+        response = this.executeCreditTransaction(amountToCredit);
+        finalAmount = balanceBefore.add(amountToCredit);
+        assertTrue(finalAmount.compareTo(response.getAccount().getBalance()) == 0);
+
+        amountToCredit = new BigDecimal(1);
+        balanceBefore = this.getCurrentBalance(account);
+        response = this.executeCreditTransaction(amountToCredit);
+        finalAmount = balanceBefore.add(amountToCredit);
+        assertTrue(finalAmount.compareTo(response.getAccount().getBalance()) == 0);
+
+    }
+
+    @Test
+    public void verifyIfBalanceIsCorrectAfterADebitTransaction(){
+
+        Account account = new Account(this.BRANCH, this.ACCOUNT);
+        account.setBalance(new BigDecimal(2500));
+        serviceAccount.save(account);
+
+        BigDecimal amountToDebit = new BigDecimal(500);
+        BigDecimal balanceBefore = this.getCurrentBalance(account);
+        Transaction response = this.executeDeditTransaction(amountToDebit);
+        BigDecimal finalAmount = balanceBefore.subtract(amountToDebit);
+        assertTrue(finalAmount.compareTo(response.getAccount().getBalance()) == 0);
+
+        amountToDebit = new BigDecimal(10);
+        balanceBefore = this.getCurrentBalance(account);
+        response = this.executeDeditTransaction(amountToDebit);
+        finalAmount = balanceBefore.subtract(amountToDebit);
+        assertTrue(finalAmount.compareTo(response.getAccount().getBalance()) == 0);
+
+        amountToDebit = new BigDecimal(25.90);
+        balanceBefore = this.getCurrentBalance(account);
+        response = this.executeDeditTransaction(amountToDebit);
+        finalAmount = balanceBefore.subtract(amountToDebit);
+        assertTrue(finalAmount.compareTo(response.getAccount().getBalance()) == 0);
+
+        amountToDebit = new BigDecimal(13.01);
+        balanceBefore = this.getCurrentBalance(account);
+        response = this.executeDeditTransaction(amountToDebit);
+        finalAmount = balanceBefore.subtract(amountToDebit);
+        assertTrue(finalAmount.compareTo(response.getAccount().getBalance()) == 0);
+
+    }
+
     private Transaction executeCreditTransaction(BigDecimal creditAmount){
         transaction.setTransactionType(ETransactionType.CREDIT);
         transaction.setAmount(creditAmount);
@@ -78,6 +145,11 @@ public class TransactionServiceTests {
         transaction.setTransactionType(ETransactionType.DEBIT);
         transaction.setAmount(creditAmount);
         return service.executeTransaction(this.transaction).block();
+    }
+
+    private BigDecimal getCurrentBalance(Account account){
+        Account resp = serviceAccount.getCurrentBalance(account).block();
+        return resp.getBalance();
     }
 
 }
