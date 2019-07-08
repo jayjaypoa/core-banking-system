@@ -13,9 +13,10 @@ Este projeto foi desenvolvido em Java (versão 11), utilizando Spring 5 e framew
 Optou-se por esta abordagem devido a questões como concorrência e conflitos transacionais.
 
 ## Banco de Dados<br/>
-
 Neste projeto foi utilizado o banco de dados não-relacional MongoDB.<br/>
-Ao subir a aplicação as estrutura de Collections/Documents necessárias são automaticamente criadas.
+Ao subir a aplicação as estrutura de Collections/Documents necessárias são automaticamente criadas.<br/><br/>
+O banco de dados foi utilizado para armazenar o saldo bancário das contas, além de manter um histórico das transações efetuadas. isto é efetuado nas respectivas collections a seguir: <i>account</i> e <i>transactions</i>.<br/>
+![Indicação das duas collections](https://i.imgur.com/UoJt8Xa.png)
 
 ## Portas Utilizadas
 Esta aplicação utiliza as portas 8082 (core-banking-system) e 27017 (mongoDB).<br/>
@@ -45,7 +46,9 @@ Por fim, abaixo seguem alguns comandos para inicialização da aplicação e mon
 ## Endpoint para Visualizar Saldo de Uma Determinada Conta
 * GET Request:<br/>
 ```http://localhost:8082/account/{ACCOUNT}/branch/{BRANCH}/balance```
-* Success Response Example:
+* Success Response Example:<br/>
+No exemplo abaixo, a cointa 44758-1, da agência 0001, possui 204 reais de saldo.
+O ID da conta é o "5d231a66a7b11b00012dc077".
 ```
 {
     "meta": {
@@ -65,7 +68,7 @@ Por fim, abaixo seguem alguns comandos para inicialização da aplicação e mon
 * POST Request:<br/>
 ```http://localhost:8082/transaction```
 * Payload Example:<br/>
-Neste exemplo, enviaremos um débito (DEBIT) para a agência 0001 e conta 44758-1.<br/>
+Neste exemplo, enviaremos um débito (DEBIT) de 3 reais para a agência 0001 e conta 44758-1.<br/>
 Para enviar um cŕedito, basta informar CREDIT no transactionType.
 ```
 {
@@ -77,7 +80,8 @@ Para enviar um cŕedito, basta informar CREDIT no transactionType.
 	"amount": 3
 }
 ```
-* Success Response Example:
+* Success Response Example:<br/>
+Neste exemplo foi retornada a confirmação da transação de ID 5d2385c6a7b11b00012dc07c, a qual foi debitado o montante de 3 reais da conta de ID 5d231a66a7b11b00012dc077 e, por conseguinte, seu novo saldo ficou em 281 reais.
 ```
 {
     "meta": {
@@ -129,3 +133,11 @@ Para enviar um cŕedito, basta informar CREDIT no transactionType.
     }
 }
 ```
+## Arquitetura Futura - Kafka<br/>
+Considerando o projeto apresentado, na minha concepção o ideal seria aliá-lo a utilização do Kafka, pois desta forma, teríamos um controle maior sobre o processo transacional (operações de crédito e débito).<br/>
+
+As requisições transacionais poderiam ser enviadas para um evento no Kafka, o qual o core-banking-system tería um consumer para receber a transação e imediatamente processá-la.<br/>
+
+O retorno de sucesso e/ou falha do processamento da requisição também poderia ser disponibilizado em outra fila do Kafka, para posterior consumo por parte do seu requisitante inicial ou demais aplicações e fluxos necessários, como por exemplo rotinas contábeis, rotinas de documentações legais, entre outros.<br/>
+
+Tal cenário daria uma segurança maior inclusive no processo de deploy do microserviço do core-banking-system, visto que o Kafka possui ponteiro para o último registro processado. Em caso de falha no microserviço, retornar o ponteiro e recontruir cenários de falhas sería mais fácil.
