@@ -41,3 +41,91 @@ Por fim, abaixo seguem alguns comandos para inicialização da aplicação e mon
 * Criando uma imagem da aplicação:
     * Por linha de comando, na pasta raiz do projeto, digite:<br/>
       ```            docker build -t core-banking-system:latest .```
+
+## Endpoint para Visualizar Saldo de Uma Determinada Conta
+* GET Request:<br/>
+```http://localhost:8082/account/{ACCOUNT}/branch/{BRANCH}/balance```
+* Success Response Example:
+```
+{
+    "meta": {
+        "processName": "/account/44758-1/branch/0001/balance",
+        "status": "success"
+    },
+    "data": {
+        "id": "5d231a66a7b11b00012dc077",
+        "branchNumber": "0001",
+        "accountNumber": "44758-1",
+        "balance": 284
+    }
+}
+```
+
+## Endpoint para Realizar Uma Transação de Crédito ou Débito
+* POST Request:<br/>
+```http://localhost:8082/transaction```
+* Payload Example:<br/>
+Neste exemplo, enviaremos um débito (DEBIT) para a agência 0001 e conta 44758-1.<br/>
+Para enviar um cŕedito, basta informar CREDIT no transactionType.
+```
+{
+	"account": {
+    	"branchNumber": "0001",
+    	"accountNumber": "44758-1"
+	},
+	"transactionType" : "DEBIT",
+	"amount": 3
+}
+```
+* Success Response Example:
+```
+{
+    "meta": {
+        "processName": "/transaction",
+        "status": "success"
+    },
+    "data": {
+        "id": "5d2385c6a7b11b00012dc07c",
+        "account": {
+            "id": "5d231a66a7b11b00012dc077",
+            "branchNumber": "0001",
+            "accountNumber": "44758-1",
+            "balance": 281
+        },
+        "transactionType": "DEBIT",
+        "amount": 3
+    }
+}
+```
+* Error Response Example - Insufficient Funds (Only possible for debit transactions):
+```
+{
+    "meta": {
+        "processName": "/transaction",
+        "status": "error"
+    },
+    "error": {
+        "msg": "Transaction not effetivated - Insufficient funds",
+        "codigo": "ERR-4001",
+        "origem": "WS-CORE-BANKING-SYSTEM",
+        "tipo": "TEC",
+        "subtipo": "TRANSACTION"
+    }
+}
+```
+* Error Response Example - Account Not Found:
+```
+{
+    "meta": {
+        "processName": "/transaction",
+        "status": "error"
+    },
+    "error": {
+        "msg": "Account not found",
+        "codigo": "ERR-2001",
+        "origem": "WS-CORE-BANKING-SYSTEM",
+        "tipo": "TEC",
+        "subtipo": "VALIDATION"
+    }
+}
+```
