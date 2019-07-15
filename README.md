@@ -27,6 +27,9 @@ Ao inicializar a aplicação, são inseridas 15 (quinze) contas de usuários par
 A inserção dos dados pode ser vista na seguinte classe: <i>br.com.bank.core.data.AccountDummyData</i><br/>
 A collection no qual estes dados ficam armazenados é: <i>Account</i>
 
+## Controle de Sessão / Token Transacional
+Tendo em conta a complexidade deste assunto e considerando o foco deste projeto, optei por abstrair questões como token a nível de sessão e a nível de aplicação.
+
 ## Docker / Inicialização
 A aplicação funciona em qualquer sistema operacional (incluindo Linux e MacOS).<br/>
 Foi utilizado Docker, justamente para garantir tal possibilidade, pois desta forma automaticamente a aplicação indica seus requisitos e os obtêm.<br/>
