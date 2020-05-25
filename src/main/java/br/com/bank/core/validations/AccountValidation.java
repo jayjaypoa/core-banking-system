@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 @Component
 public class AccountValidation {
 
-    @Autowired
     public AccountValidation(){}
 
     public Mono<Account> validate(Account account) {

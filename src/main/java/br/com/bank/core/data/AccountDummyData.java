@@ -3,6 +3,7 @@ package br.com.bank.core.data;
 import br.com.bank.core.entity.Account;
 import br.com.bank.core.repository.AccountRepository;
 import br.com.bank.core.repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -19,7 +20,7 @@ public class AccountDummyData implements CommandLineRunner{
 
     private final TransactionRepository transactionRepository;
 
-
+    @Autowired
     AccountDummyData ( AccountRepository accountRepository,
                        TransactionRepository transactionRepository ) {
         this.accountRepository = accountRepository;

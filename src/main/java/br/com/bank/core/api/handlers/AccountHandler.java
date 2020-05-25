@@ -20,8 +20,12 @@ public class AccountHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountHandler.class);
 
-    @Autowired
     private AccountService accountService;
+
+    @Autowired
+    public AccountHandler(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     public Mono<ServerResponse> findAll(ServerRequest request){
         logger.debug("Endpoint called - findAll");

@@ -4,7 +4,9 @@ services:
   core:
     build: .
     ports:
-      - 8082:8082
+      - 8084:8084
+    expose:
+      - 8084
     container_name: core
     depends_on:
       - mongo
@@ -16,6 +18,8 @@ services:
     image: mongo
     ports:
       - 27017:27017
+    expose:
+      - 27017
     container_name: mongo-core
     volumes:
       - /home/core/Docker/Volumes/MongoDB:/data/db

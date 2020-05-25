@@ -14,8 +14,12 @@ public class TransactionRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
 
-    @Autowired
     private ReactiveMongoTemplate reactiveMongoTemplate;
+
+    @Autowired
+    public TransactionRepository(ReactiveMongoTemplate reactiveMongoTemplate) {
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
+    }
 
     public Mono<Transaction> insert(Transaction transaction) {
         return reactiveMongoTemplate.insert(transaction);

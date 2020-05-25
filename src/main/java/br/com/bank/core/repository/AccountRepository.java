@@ -13,8 +13,12 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @Repository
 public class AccountRepository {
 
-    @Autowired
     private ReactiveMongoTemplate reactiveMongoTemplate;
+
+    @Autowired
+    public AccountRepository(ReactiveMongoTemplate reactiveMongoTemplate) {
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
+    }
 
     public Mono<Account> insert(Account account) {
         return reactiveMongoTemplate.insert(account);

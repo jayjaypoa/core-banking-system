@@ -19,8 +19,12 @@ public class TransactionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionHandler.class);
 
-    @Autowired
     private TransactionService transactionService;
+
+    @Autowired
+    public TransactionHandler(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
 
     public Mono<ServerResponse> executeTransactionRequest(final ServerRequest request){
         logger.debug("Endpoint called - executeTransactionRequest");

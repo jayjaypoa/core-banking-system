@@ -18,7 +18,6 @@ public class TransactionValidation {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionValidation.class);
 
-    @Autowired
     public TransactionValidation(){}
 
     public Mono<Transaction> validate(Transaction transaction) {

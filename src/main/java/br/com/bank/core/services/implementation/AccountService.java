@@ -19,11 +19,16 @@ public class AccountService implements IAccountService {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
 
-    @Autowired
     private AccountRepository accountRepository;
 
-    @Autowired
     private AccountValidation accountValidation;
+
+    @Autowired
+    public AccountService( AccountRepository accountRepository,
+                           AccountValidation accountValidation ) {
+        this.accountRepository = accountRepository;
+        this.accountValidation = accountValidation;
+    }
 
     @Override
     public Flux<Account> findAll() {

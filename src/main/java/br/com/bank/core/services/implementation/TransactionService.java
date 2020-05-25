@@ -20,14 +20,20 @@ public class TransactionService implements ITransactionService {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
 
-    @Autowired
     private TransactionRepository transactionRepository;
 
-    @Autowired
     private TransactionValidation transactionValidation;
 
-    @Autowired
     private AccountService accountService;
+
+    @Autowired
+    public TransactionService( TransactionRepository transactionRepository,
+                               TransactionValidation transactionValidation,
+                               AccountService accountService ) {
+        this.transactionRepository = transactionRepository;
+        this.transactionValidation = transactionValidation;
+        this.accountService = accountService;
+    }
 
     @Override
     public Mono<Transaction> executeTransaction(Transaction transaction) {

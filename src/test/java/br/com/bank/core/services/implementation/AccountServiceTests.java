@@ -25,10 +25,14 @@ public class AccountServiceTests {
     private static final String BRANCH = "0001";
     private static final String ACCOUNT = "12345-0";
 
-    @Autowired
     private AccountService service;
 
     private Account account;
+
+    @Autowired
+    public AccountServiceTests(AccountService service) {
+        this.service = service;
+    }
 
     @BeforeEach
     public void before(){

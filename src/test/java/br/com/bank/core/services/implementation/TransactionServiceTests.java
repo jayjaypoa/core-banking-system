@@ -25,13 +25,17 @@ public class TransactionServiceTests {
     private static final String BRANCH = "0001";
     private static final String ACCOUNT = "44758-1";
 
-    @Autowired
     private TransactionService service;
 
-    @Autowired
     private AccountService serviceAccount;
 
     private Transaction transaction;
+
+    @Autowired
+    public TransactionServiceTests(TransactionService service, AccountService serviceAccount) {
+        this.service = service;
+        this.serviceAccount = serviceAccount;
+    }
 
     @BeforeEach
     public void before(){
