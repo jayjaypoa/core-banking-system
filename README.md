@@ -19,7 +19,7 @@ O banco de dados foi utilizado para armazenar o saldo bancário das contas, alé
 ![Indicação das duas collections](https://i.imgur.com/UoJt8Xa.png)
 
 ## Portas Utilizadas
-Esta aplicação utiliza as portas 8082 (core-banking-system) e 27017 (mongoDB).<br/>
+Esta aplicação utiliza as portas 8084 (core-banking-system) e 27017 (mongoDB).<br/>
 Caso a aplicação seja rodada localmente, certifique-se que estas portas estejam liberadas ou, caso preferir, altere-as no arquivo <i>application.properties</i> do projeto.
 
 ## Dummy Data / Dados para testes
@@ -48,7 +48,7 @@ Por fim, abaixo seguem alguns comandos para inicialização da aplicação e mon
 
 ## Endpoint para Visualizar Saldo de Uma Determinada Conta
 * GET Request:<br/>
-```http://localhost:8082/account/{ACCOUNT}/branch/{BRANCH}/balance```
+```http://localhost:8084/account/{ACCOUNT}/branch/{BRANCH}/balance```
 * Success Response Example:<br/>
 No exemplo abaixo, a cointa 44758-1, da agência 0001, possui 204 reais de saldo.
 O ID da conta é o "5d231a66a7b11b00012dc077".
@@ -69,7 +69,7 @@ O ID da conta é o "5d231a66a7b11b00012dc077".
 
 ## Endpoint para Realizar Uma Transação de Crédito ou Débito
 * POST Request:<br/>
-```http://localhost:8082/transaction```
+```http://localhost:8084/transaction```
 * Payload Example:<br/>
 Neste exemplo, enviaremos um débito (DEBIT) de 3 reais para a agência 0001 e conta 44758-1.<br/>
 Para enviar um cŕedito, basta informar CREDIT no transactionType.
