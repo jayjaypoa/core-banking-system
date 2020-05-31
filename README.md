@@ -38,7 +38,7 @@ Por fim, abaixo seguem alguns comandos para inicialização da aplicação e mon
 
 * Iniciando aplicação:
     * Por linha de comando, na pasta raiz do projeto, digite:<br/>
-      ```            docker-compose up```
+      ```            docker-compose up --build```
 * Parando aplicação:
     * Por linha de comando, na pasta raiz do projeto, digite:<br/>
       ```            docker-compose stop```
